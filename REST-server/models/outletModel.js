@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const { Schema } = mongoose;
 const User = require('./userModel');
 
 const outletSchema = new mongoose.Schema({
@@ -44,11 +43,11 @@ const outletSchema = new mongoose.Schema({
     required: true,
   },
   adminList: {
-    type: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     default: [],
   },
   peoplePresent: {
-    type: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     default: [],
   },
   headCount: {

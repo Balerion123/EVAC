@@ -12,6 +12,10 @@ const userSchema = new mongoose.Schema({
     unique: true,
     // PHONE NUMBER MUST BE UNIQUE
   },
+  password: {
+    type: String,
+    required: [true, 'Please provide your password'],
+  },
 });
 
 // CREATING AN OBJECT USER BASED ON THE USER SCHEMA
