@@ -1,7 +1,7 @@
 const express = require("express");
 const { createServer } = require("http");
 const { Server } = require("socket.io");
-const { initializeRoutes } = require("routes");
+const { initializeRoutes } = require("./routes");
 
 let app = express();
 const port = 3000;
