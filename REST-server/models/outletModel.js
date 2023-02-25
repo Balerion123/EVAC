@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const { Schema } = mongoose;
+const User = require('./userModel');
 
 const outletSchema = new mongoose.Schema({
   name: {
@@ -42,10 +44,12 @@ const outletSchema = new mongoose.Schema({
     required: true,
   },
   adminList: {
-    type: [String],
+    type: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+    default: [],
   },
   peoplePresent: {
-    type: [String],
+    type: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+    default: [],
   },
   headCount: {
     type: Number,
@@ -66,8 +70,8 @@ outletSchema.pre('save', function (next) {
   }
 });
 
-// CREATING AN OBJECT USER BASED ON THE USER SCHEMA
+// CREATING AN OBJECT USER BASED ON THE OUTLET SCHEMA
 const Outlet = mongoose.model('Outlet', outletSchema);
 
-// EXPORTING THE USER OBJECT
+// EXPORTING THE OUTLET OBJECT
 module.exports = Outlet;
