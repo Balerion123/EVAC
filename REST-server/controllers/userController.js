@@ -162,3 +162,29 @@ exports.getLocationOfOutlets = async (req, res, next) => {
     });
   }
 };
+
+exports.sendSOS = async (req, res, next) => {
+  try {
+    const { outletName, message } = req.body;
+    await Outlet.findOneAndUpdate(
+      { name: outletName },
+      {
+        sos: sos.push({ user: req.params.id, message }),
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    res.status(200).json({
+      status: 'success',
+      message: 'SOS successfully sent',
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: 'failed',
+      message: err.message,
+    });
+  }
+};

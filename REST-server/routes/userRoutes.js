@@ -18,5 +18,6 @@ router.post(
   userController.getMe,
   userController.getLocationOfOutlets
 );
+router.post('/sendSOS', userController.getMe, userController.sendSOS);
 
 module.exports = router;

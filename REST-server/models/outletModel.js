@@ -59,6 +59,19 @@ const outletSchema = new mongoose.Schema({
     type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     default: [],
   },
+  sos: [
+    {
+      user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+      },
+      message: {
+        type: String,
+        default: '',
+      },
+    },
+  ],
   headCount: {
     type: Number,
     default: 0,
