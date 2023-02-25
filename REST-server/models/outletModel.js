@@ -78,6 +78,8 @@ outletSchema.pre('save', function (next) {
   }
 });
 
+outletSchema.index({ location: '2dsphere' });
+
 // CREATING AN OBJECT USER BASED ON THE OUTLET SCHEMA
 const Outlet = mongoose.model('Outlet', outletSchema);
 

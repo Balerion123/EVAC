@@ -112,9 +112,53 @@ exports.addUserToOutlet = async (req, res, next) => {
     });
   } else {
     // USER NOT IN PROXIMITY OF OUTLET
-    res.status(401).json({
+    res.status(404).json({
       status: 'success',
       message: `User not close enough to ${outlet.name}`,
+    });
+  }
+};
+
+exports.getLocationOfOutlets = async (req, res, next) => {
+  try {
+    const { currentLocation } = req.body;
+
+    const point = {
+      type: 'Point',
+      coordinates: [currentLocation.longitude, currentLocation.latitude],
+    };
+
+    // PIPELINE TO GET TOP 5 LOCATIONS IN PROXIMITY TO USERS LOCATION
+    const pipeline = [
+      {
+        $geoNear: {
+          near: point,
+          distanceField: 'distance',
+          spherical: true,
+        },
+      },
+      {
+        $limit: 5,
+      },
+    ];
+
+    Outlet.aggregate(pipeline, (err, results) => {
+      if (err) {
+        res.status(401).json({
+          status: 'failed',
+          message: err.message,
+        });
+      } else {
+        res.status(200).json({
+          status: 'success',
+          data: results,
+        });
+      }
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: 'failed',
+      message: err.message,
     });
   }
 };
