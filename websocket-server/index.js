@@ -1,16 +1,35 @@
-"use strict";
+const express = require("express");
+const { createServer } = require("http");
+const { Server } = require("socket.io");
 
-const socketioJwt = require( "socketio-jwt" );
+let app = express();
+const port = 3000;
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+const httpServer = createServer(app);
+const io = new Server(httpServer, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"],
+  },
+});
+
+
+
+httpServer.listen(port, () => {
+  console.log(`evac app listening on port ${port}`);
+});
+
+
 
 module.exports = function ( io, opts ) {
 
-  io.sockets.on( "connection", socketioJwt.authorize( {
-    secret: JWT,
-    timeout: 15000 // 15 seconds to send the authentication message
-  } ) ).on( "authenticated", function ( socket ) {
+  io.sockets.on( "connection", function ( socket ) {
     socket.on( "entered", () => {
 
       let user = socket.decoded_token.user.name;
+      console.log( "hi user", user ,socket.id);
       let outlet = socket.decoded_token.outlet;
 
       opts.outlets.filter( ( o ) => o.name === outlet )[0].users.push( user );
@@ -36,6 +55,7 @@ module.exports = function ( io, opts ) {
     } );
 
     let users = [];
+    //need to send list to outlets.people present
 
     users.push( {
       user: "test"
