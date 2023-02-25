@@ -6,11 +6,20 @@ const outletSchema = new mongoose.Schema({
     type: String,
     required: [true, 'A user must have a name'],
   },
-  phoneNumber: {
-    type: String,
-    required: [true, 'Please provide your phone number'],
-    unique: true,
-    // PHONE NUMBER MUST ALSO BE UNIQUE
+  location: {
+    type: {
+      type: String,
+      enum: ['Point'],
+      required: [true, 'Please set type as point'],
+    },
+    coordinates: {
+      type: [Number],
+      required: [true, 'Please set coordinates for your outlet'],
+    },
+  },
+  radius: {
+    type: Number,
+    required: [true, 'Please set radius for your outlet'],
   },
   isOpen: {
     type: Boolean,

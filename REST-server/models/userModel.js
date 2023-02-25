@@ -12,9 +12,24 @@ const userSchema = new mongoose.Schema({
     unique: true,
     // PHONE NUMBER MUST BE UNIQUE
   },
+  emergencyContact: {
+    type: String,
+    required: [true, 'Please provide emergency contact'],
+  },
   password: {
     type: String,
     required: [true, 'Please provide your password'],
+  },
+  location: {
+    type: {
+      type: String,
+      enum: ['Point'],
+      required: true,
+    },
+    coordinates: {
+      type: [Number],
+      required: true,
+    },
   },
 });
 
