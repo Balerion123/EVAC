@@ -2,8 +2,9 @@ const express = require("express");
 const { createServer } = require("http");
 const { Server } = require("socket.io");
 const { initializeRoutes } = require("./routes/index");
-const { Outlet } = require('../REST-server/models/outletModel');
-const { User } = require('../REST-server/models/userModel');
+const  Outlet  = require('../REST-server/models/outletModel');
+const  User  = require('../REST-server/models/userModel');
+
 let app = express();
 app = initializeRoutes(app);
 app.get("/", (req, res) => {
@@ -31,12 +32,11 @@ httpServer.listen(port, () => {
 });
 
 
-const id = '1234567890';//outlet id from logged in admin
-
-
-
-
-
+const id=  Outlet.findOne({},'_id', function(err, result) {
+  if (err) throw err;
+  console.log(result._id);
+  return result._id;
+});
 
   io.on( "connection", socket => {
     console.log( "New client connected" );
@@ -44,25 +44,27 @@ const id = '1234567890';//outlet id from logged in admin
    // get the count of currently connected users
   const connectedUsers = io.sockets.sockets.size;
   console.log(`Total connected users: ${connectedUsers}`);
-
-  Outlet.findById(id, (err, record) => {
-    if (err) {
-      console.error(err);
-      return;
-    }
-    record.headCount = io.sockets.sockets.size;
-    //add person from list of people present in outlet
-    let addedUser= User.findById(io.sockets.sockets.id)
-    record.peoplePresent.push(addedUser);
-     
-    record.save((err) => {
+  
+    Outlet.findById(id, (err, record) => {
       if (err) {
         console.error(err);
         return;
       }
-      console.log('headcount updated !');
+      record.headCount = io.sockets.sockets.size;
+      //add person from list of people present in outlet
+      let addedUser= User.findById(io.sockets.sockets.id)
+      record.peoplePresent.push(addedUser);
+       
+      record.save((err) => {
+        if (err) {
+          console.error(err);
+          return;
+        }
+        console.log('headcount updated !');
+      });
     });
-  });
+
+  
   
 
   
@@ -73,24 +75,27 @@ const id = '1234567890';//outlet id from logged in admin
     // update the count of connected users
     const connectedUsers = io.sockets.sockets.size;
     console.log(`Total connected users: ${connectedUsers}`);
-    Outlet.findById(id, (err, record) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
-      record.headCount = io.sockets.sockets.size;
-      //remove person from list of people present in outlet
-      let removedUser= User.findById(io.sockets.sockets.id)
-      record.peoplePresent.pull(removedUser);
-
-      record.save((err) => {
+    
+      Outlet.findById(id, (err, record) => {
         if (err) {
           console.error(err);
           return;
         }
-        console.log('headcount updated !');
+        record.headCount = io.sockets.sockets.size;
+        //remove person from list of people present in outlet
+      let removedUser= User.findById(io.sockets.sockets.id)
+      record.peoplePresent.pull(removedUser);
+
+         
+        record.save((err) => {
+          if (err) {
+            console.error(err);
+            return;
+          }
+          console.log('headcount updated !');
+        });
       });
-    });
+    
 
   });
   
