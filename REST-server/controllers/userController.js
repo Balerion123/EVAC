@@ -188,3 +188,19 @@ exports.sendSOS = async (req, res, next) => {
     });
   }
 };
+
+exports.getAllOutlets = async (req, res, next) => {
+  try {
+    const outlets = await Outlet.find();
+
+    res.status(200).json({
+      status: 'success',
+      data: outlets,
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: 'failed',
+      message: err.message,
+    });
+  }
+}
