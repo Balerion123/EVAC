@@ -3,7 +3,7 @@ const { createServer } = require("http");
 const { Server } = require("socket.io");
 const { initializeRoutes } = require("./routes/index");
 const { Outlet } = require('../REST-server/models/outletModel');
-
+const { User } = require('../REST-server/models/userModel');
 let app = express();
 app = initializeRoutes(app);
 app.get("/", (req, res) => {
@@ -31,21 +31,30 @@ httpServer.listen(port, () => {
 });
 
 
-const id = '1234567890';//outlet id
+const id = '1234567890';//outlet id from logged in admin
+
+
+
 
 
 
   io.on( "connection", socket => {
     console.log( "New client connected" );
+  
    // get the count of currently connected users
   const connectedUsers = io.sockets.sockets.size;
   console.log(`Total connected users: ${connectedUsers}`);
+
   Outlet.findById(id, (err, record) => {
     if (err) {
       console.error(err);
       return;
     }
     record.headCount = io.sockets.sockets.size;
+    //add person from list of people present in outlet
+    let addedUser= User.findById(io.sockets.sockets.id)
+    record.peoplePresent.push(addedUser);
+     
     record.save((err) => {
       if (err) {
         console.error(err);
@@ -54,6 +63,9 @@ const id = '1234567890';//outlet id
       console.log('headcount updated !');
     });
   });
+  
+
+  
 
   // handle disconnect event
   socket.on('disconnect', () => {
@@ -67,6 +79,10 @@ const id = '1234567890';//outlet id
         return;
       }
       record.headCount = io.sockets.sockets.size;
+      //remove person from list of people present in outlet
+      let removedUser= User.findById(io.sockets.sockets.id)
+      record.peoplePresent.pull(removedUser);
+
       record.save((err) => {
         if (err) {
           console.error(err);
