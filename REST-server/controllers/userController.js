@@ -99,7 +99,7 @@ exports.addUserToOutlet = async (req, res, next) => {
       outlet.location.coordinates[1],
       currentLocation[0],
       currentLocation[1]
-    ) > outlet.radius
+    ) <= outlet.radius
   ) {
     // ADD USER TO LIST OF PEOPLE PRESENT IN THE OUTLET
     outlet.peoplePresent.push(req.params.id);
